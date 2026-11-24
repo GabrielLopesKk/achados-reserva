@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Back-end (build, lint, testes)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Build (compila e importa a aplicação)
+        run: python -m compileall -q app && python -c "from app import create_app; create_app({'TESTING': True, 'DATABASE': '/tmp/ci.sqlite', 'UPLOAD_DIR': '/tmp/ci-up'})"
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Testes
+        run: python -m unittest discover -s tests -t . -v
+
+  frontend:
+    name: Front-end (build, lint, testes)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Build (não há etapa de bundle; valida que os arquivos estáticos existem)
+        run: test -f index.html && test -f app.js && test -f styles.css
+      - name: Lint (verificação de sintaxe)
+        run: npm run lint
+      - name: Testes
+        run: npm test
+
+  commits:
+    name: Conventional Commits
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verifica as mensagens de commit do PR
+        run: bash scripts/check-commits.sh "origin/${{ github.base_ref }}" HEAD

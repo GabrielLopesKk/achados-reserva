@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+instance/
+.env
+node_modules/
+.ruff_cache/
+*.sqlite

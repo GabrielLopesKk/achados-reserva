@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Achados e Perdidos · Senac Canoas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Achados e Perdidos</h1>
+    <p>Senac Canoas e entorno. Registre, descreva com ajuda da IA e encontre o que sumiu.</p>
+    <nav aria-label="Seções" id="tabs">
+      <button data-tab="search" aria-selected="true">Procurar</button>
+      <button data-tab="found" aria-selected="false">Achei algo</button>
+      <button data-tab="lost" aria-selected="false">Perdi algo</button>
+      <button data-tab="staff" aria-selected="false">Recepção</button>
+    </nav>
+  </header>
+
+  <main>
+    <p id="notice" role="status" hidden></p>
+
+    <section id="tab-search">
+      <form id="search-form" class="filters">
+        <label>Palavras <input name="q" placeholder="capuz, adesivo, riscado…"></label>
+        <label>Tipo <select name="type"></select></label>
+        <label>Cor <select name="color"></select></label>
+        <label>Local <select name="location"></select></label>
+        <button class="primary">Buscar</button>
+      </form>
+      <div id="results" class="tags"></div>
+    </section>
+
+    <section id="tab-found" hidden>
+      <h2>Registrar item encontrado</h2>
+      <p class="hint">Dica: guarde o item na recepção. Você não precisa ficar responsável por ele.</p>
+      <form id="found-form" class="stack">
+        <label>Foto do objeto <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required></label>
+        <p id="ai-status" class="ai-status" hidden></p>
+        <p id="sensitive-alert" class="alert" hidden>A foto parece mostrar um documento, cartão ou rosto. Ela ficará oculta na busca pública e só a recepção poderá vê-la.</p>
+        <div class="row">
+          <label>Tipo <select name="item_type"></select></label>
+          <label>Cor <select name="color"></select></label>
+        </div>
+        <label>Marcas visíveis <input name="marks" maxlength="200" placeholder="adesivo de gato, risco na tampa"></label>
+        <label>Descrição <textarea name="description" maxlength="500" rows="3" required></textarea></label>
+        <div class="row">
+          <label>Local aproximado <select name="location"></select></label>
+          <label>Data <input type="date" name="found_date" required></label>
+        </div>
+        <label class="check"><input type="checkbox" name="sensitive"> Contém documento, cartão ou rosto</label>
+        <label class="check"><input type="checkbox" name="reviewed" required> Revisei a descrição sugerida e ela está correta</label>
+        <button class="primary">Registrar item</button>
+      </form>
+    </section>
+
+    <section id="tab-lost" hidden>
+      <h2>Registrar o que você perdeu</h2>
+      <form id="lost-form" class="stack">
+        <label>O que você procura <textarea name="description" rows="3" minlength="5" maxlength="500" required placeholder="Jaqueta preta com capuz e adesivo de gato"></textarea></label>
+        <div class="row">
+          <label>Tipo <select name="item_type"></select></label>
+          <label>Cor <select name="color"></select></label>
+        </div>
+        <div class="row">
+          <label>Onde acha que perdeu <select name="location"></select></label>
+          <label>Quando <input type="date" name="lost_date" required></label>
+        </div>
+        <label>E-mail ou telefone <input name="contact" required minlength="5" autocomplete="off"></label>
+        <p class="hint">Seu contato nunca aparece em listas públicas.</p>
+        <button class="primary">Registrar relato</button>
+      </form>
+      <div id="report-result"></div>
+    </section>
+
+    <section id="tab-staff" hidden>
+      <h2>Painel da recepção</h2>
+      <form id="staff-form" class="row">
+        <label>Token da recepção <input type="password" name="token" autocomplete="off" required></label>
+        <button class="primary">Entrar</button>
+      </form>
+      <div id="staff-list" class="tags"></div>
+    </section>
+  </main>
+
+  <dialog id="claim-dialog">
+    <form method="dialog" id="claim-form" class="stack">
+      <h2>Esse item é seu?</h2>
+      <p class="hint">Descreva algo que só o dono saberia. A recepção confere antes de entregar.</p>
+      <label>Nome <input name="name" required minlength="2"></label>
+      <label>E-mail ou telefone <input name="contact" required minlength="5" autocomplete="off"></label>
+      <label>Como você reconhece o item? <textarea name="message" rows="3" maxlength="300"></textarea></label>
+      <div class="row"><button class="primary">Tenho interesse</button><button type="button" id="claim-cancel">Cancelar</button></div>
+    </form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

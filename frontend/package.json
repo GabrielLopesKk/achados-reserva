@@ -1,0 +1,9 @@
+{
+  "name": "achados-e-perdidos-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "node --check lib.js && node --check app.js",
+    "test": "node --test"
+  }
+}
